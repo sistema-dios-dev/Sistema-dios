@@ -1,0 +1,7 @@
+Django>=4.0
+requests
+python-dotenv
+discord.py
+python-telegram-bot
+railway
+gunicorn
