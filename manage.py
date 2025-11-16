@@ -5,7 +5,7 @@ import sys
 
 
 def main():
-    """Run administrative tasks."""
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'web_dashboard.settings')
     try:
         from django.core.management import execute_from_command_line
@@ -20,5 +20,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
