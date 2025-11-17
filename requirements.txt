@@ -6,7 +6,7 @@ sqlparse==0.4.4
 python-telegram-bot==21.0.1
 flask==2.3.3
 requests==2.31.0
-pillow==10.0.1
+pillow==9.5.0
 
 
 
