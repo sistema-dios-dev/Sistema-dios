@@ -6,6 +6,11 @@ sqlparse==0.4.4
 python-telegram-bot==21.0.1
 flask==2.3.3
 requests==2.31.0
+pytelegrambotapi==4.14.0
+aiohttp==3.8.5
+numpy==1.24.3
+pandas==2.0.3
+
 
 
 
