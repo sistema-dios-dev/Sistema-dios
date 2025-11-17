@@ -1,5 +1,4 @@
 import os
-import asyncio
 import logging
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
@@ -16,18 +15,22 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def status(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text('✅ Bot funcionando correctamente')
 
-async def main():
+def main():
     if not TELEGRAM_TOKEN:
         print('❌ ERROR: No hay token de Telegram')
         return
         
-    application = Application.builder().token(TELEGRAM_TOKEN).build()
-    
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("status", status))
-    
-    print('🚀 Iniciando bot...')
-    await application.run_polling()
+    try:
+        application = Application.builder().token(TELEGRAM_TOKEN).build()
+        
+        application.add_handler(CommandHandler("start", start))
+        application.add_handler(CommandHandler("status", status))
+        
+        print('🚀 Iniciando bot...')
+        application.run_polling()
+        
+    except Exception as e:
+        print(f'❌ Error: {e}')
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
