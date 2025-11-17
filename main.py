@@ -1,7 +1,8 @@
 import os
+import asyncio
 import logging
 from telegram import Update
-from telegram.ext import Updater, CommandHandler, CallbackContext
+from telegram.ext import Application, CommandHandler, ContextTypes
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
@@ -9,26 +10,24 @@ logger = logging.getLogger(__name__)
 
 TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
 
-def start(update: Update, context: CallbackContext):
-    update.message.reply_text('🚀 Sistema Dios Bot - ACTIVO')
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text('🚀 Sistema Dios Bot - ACTIVO')
 
-def status(update: Update, context: CallbackContext):
-    update.message.reply_text('✅ Bot funcionando correctamente')
+async def status(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text('✅ Bot funcionando correctamente')
 
-def main():
+async def main():
     if not TELEGRAM_TOKEN:
         print('❌ ERROR: No hay token de Telegram')
         return
         
-    updater = Updater(TELEGRAM_TOKEN, use_context=True)
-    dp = updater.dispatcher
+    application = Application.builder().token(TELEGRAM_TOKEN).build()
     
-    dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CommandHandler("status", status))
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("status", status))
     
     print('🚀 Iniciando bot...')
-    updater.start_polling()
-    updater.idle()
+    await application.run_polling()
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
