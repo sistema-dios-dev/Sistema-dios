@@ -1,45 +1,53 @@
-import discord
-import asyncio
 import os
-from config import BOT_TOKEN, DEBUG
+import asyncio
+import logging
+from telegram import Update
+from telegram.ext import Application, CommandHandler, ContextTypes
 
-class MyBot(discord.Client):
-    async def on_ready(self):
-        print(f'✅ Bot conectado como {self.user}')
-        print(f'🆔 ID: {self.user.id}')
-        print('🚀 Bot funcionando en la nube! ☁️')
-        
-        # Cambiar estado del bot
-        await self.change_presence(
-            activity=discord.Activity(
-                type=discord.ActivityType.watching,
-                name="en la nube ☁️"
-            )
-        )
+# Configurar logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-    async def on_message(self, message):
-        if message.author == self.user:
-            return
-        
-        if message.content.startswith('!hola'):
-            await message.channel.send(f'¡Hola {message.author.mention}! 🤖 Funciono en la nube! ☁️')
+# Token de Telegram desde variables de entorno
+TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Comando /start"""
+    await update.message.reply_text(
+        '🚀 **Sistema Dios Bot Activado**\n\n'
+        '✅ Bot configurado correctamente\n'
+        '🔧 Modo: DEMO\n'
+        '📊 Risk: 5%\n\n'
+        'Usa /status para ver el estado del sistema'
+    )
+
+async def status(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Comando /status"""
+    await update.message.reply_text(
+        '📊 **Estado del Sistema:**\n'
+        '✅ Bot: ACTIVO\n'
+        '🔧 Modo: DEMO\n'
+        '⚡ Risk: 5%\n'
+        '🔍 Debug: ACTIVADO\n\n'
+        '🚀 Sistema listo para operar!'
+    )
 
 async def main():
-    print('🌐 Iniciando bot en modo producción...')
-    
-    # Para la nube, necesitamos usar el token de las variables de entorno
-    token = os.getenv('BOT_TOKEN', BOT_TOKEN)
-    
-    if not token or token == 'tu_token_aqui':
-        print('❌ ERROR: No hay token configurado')
-        print('💡 Ve a Railway → Variables → Agrega BOT_TOKEN')
+    """Función principal"""
+    if not TELEGRAM_TOKEN or TELEGRAM_TOKEN == 'tu_token_real_aqui':
+        print('❌ ERROR: No hay token de Telegram configurado')
         return
-    
-    bot = MyBot()
-    try:
-        await bot.start(token)
-    except Exception as e:
-        print(f'❌ Error: {e}')
 
-if _name_ == "_main_":
+    # Crear aplicación de Telegram
+    application = Application.builder().token(TELEGRAM_TOKEN).build()
+    
+    # Registrar comandos
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("status", status))
+    
+    # Iniciar bot
+    print('🚀 Iniciando Sistema Dios Bot...')
+    await application.run_polling()
+
+if __name__ == "__main__":
     asyncio.run(main())
