@@ -6,7 +6,8 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
 
 # Configuración optimizada para Render
-logging.basicConfig(level=logging.ERROR)
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class DivineTradingBot:
     def __init__(self, token: str):
@@ -35,6 +36,7 @@ class DivineTradingBot:
         
         self.setup_handlers()
         self._start_divine_cycles()
+        logger.info("✅ Sistema Dios inicializado correctamente")
 
     def _start_divine_cycles(self):
         """Iniciar ciclos divinos en background"""
@@ -72,7 +74,7 @@ class DivineTradingBot:
         
         self.application.add_handler(CallbackQueryHandler(self.button_handler))
 
-    # 🎯 COMANDOS PRINCIPALES
+    # 🎯 COMANDOS PRINCIPALES (mantener igual que antes)
     async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         user = update.effective_user
         text = f"""
@@ -306,14 +308,20 @@ class DivineTradingBot:
 
     async def run(self):
         """Ejecutar el bot en Render"""
-        print("🚀 SISTEMA DIOS INICIADO EN RENDER")
-        print("⚡ Configurando webhook para producción...")
+        logger.info("🚀 SISTEMA DIOS INICIADO EN RENDER")
         
-        # Para Render usamos webhook
-        webhook_url = f"https://{os.environ.get('RENDER_SERVICE_NAME', 'sistema-dios-bot')}.onrender.com"
-        
-        await self.application.bot.set_webhook(f"{webhook_url}/webhook")
-        print(f"🌐 Webhook configurado: {webhook_url}/webhook")
-        
-        # Iniciar polling para desarrollo local
-        await self.application.run_polling()
+        try:
+            # En Render usamos webhook
+            service_name = os.environ.get('RENDER_SERVICE_NAME', 'sistema-dios-bot')
+            webhook_url = f"https://{service_name}.onrender.com"
+            
+            await self.application.bot.set_webhook(f"{webhook_url}/webhook")
+            logger.info(f"🌐 Webhook configurado: {webhook_url}/webhook")
+            
+            # Iniciar polling (Render maneja el webhook automáticamente)
+            await self.application.run_polling()
+            
+        except Exception as e:
+            logger.error(f"❌ Error en ejecución: {e}")
+            # Mantener el servicio activo
+            await asyncio.sleep(3600)
