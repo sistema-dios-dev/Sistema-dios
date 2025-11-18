@@ -1,22 +1,14 @@
-#!/usr/bin/env python3
 import os
-import sys
-import subprocess
+from elite_bot import DivineTradingBot
+import asyncio
 
-def start_bot():
-    """Inicia el bot principal"""
-    print("🚂 Iniciando bot en Railway...")
-    try:
-        # Importar y ejecutar el bot principal
-        from main import main
-        import asyncio
-        
-        print("✅ Módulos importados correctamente")
-        asyncio.run(main())
-        
-    except Exception as e:
-        print(f"❌ Error al iniciar el bot: {e}")
-        sys.exit(1)
+async def start_bot():
+    token = os.environ.get('TELEGRAM_TOKEN')
+    if not token:
+        raise ValueError("❌ TELEGRAM_TOKEN no configurado en Railway")
+    
+    bot = DivineTradingBot(token)
+    await bot.run()
 
-if _name_ == "_main_":
-    start_bot()
+if __name__ == "__main__":
+    asyncio.run(start_bot())
