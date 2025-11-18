@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: sistema-dios-bot
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python render_start.py
+    envVars:
+      - key: TELEGRAM_TOKEN
+        sync: false
+    plan: free
