@@ -1,0 +1,25 @@
+class Bet365:
+    def __init__(self):
+        self.name = "Bet365"
+        self.commission = 0.05  # 5%
+    
+    def get_odds(self, event):
+        """Obtener odds de Bet365 (simulado)"""
+        return {
+            'event': event,
+            'odds': {
+                'home': 2.1,
+                'draw': 3.4, 
+                'away': 3.2
+            },
+            'timestamp': '2024-01-01 12:00:00'
+        }
+    
+    def place_bet(self, bet_data):
+        """Colocar apuesta (simulado)"""
+        return {
+            'success': True,
+            'bet_id': 'B365_123456',
+            'stake': bet_data['stake'],
+            'potential_win': bet_data['stake'] * bet_data['odds']
+        }
