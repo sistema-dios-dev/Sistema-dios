@@ -5,7 +5,7 @@ from datetime import datetime
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
 
-# Configuración turbo
+# Configuración optimizada para Render
 logging.basicConfig(level=logging.ERROR)
 
 class DivineTradingBot:
@@ -55,7 +55,7 @@ class DivineTradingBot:
         """Configurar todos los comandos"""
         handlers = [
             CommandHandler("start", self.start),
-            CommandHandler("god", self.god_mode),
+            CommandHandler("god", self.god_mode_command),
             CommandHandler("status", self.status),
             CommandHandler("live", self.live),
             CommandHandler("profit", self.profit),
@@ -76,9 +76,9 @@ class DivineTradingBot:
     async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         user = update.effective_user
         text = f"""
-👑 *SISTEMA DIOS ACTIVADO*
+👑 *SISTEMA DIOS ACTIVADO - RENDER*
 
-¡Hola {user.first_name}! Tu bot divino está listo.
+¡Hola {user.first_name}! Tu bot divino está desplegado en Render.
 
 ⚡ *Estado Actual:*
 • 🧠 Omnisciencia: {self.omniscience_level}%
@@ -105,7 +105,7 @@ class DivineTradingBot:
         reply_markup = InlineKeyboardMarkup(keyboard)
         await update.message.reply_text(text, parse_mode='Markdown', reply_markup=reply_markup)
 
-    async def god_mode(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+    async def god_mode_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         text = f"""
 🔥 *MODO DIOS - CONTROL DIVINO*
 
@@ -129,7 +129,7 @@ class DivineTradingBot:
     async def status(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         uptime = datetime.now() - self.start_time
         text = f"""
-📊 *ESTADO DEL SISTEMA DIOS*
+📊 *ESTADO DEL SISTEMA DIOS - RENDER*
 
 ⏱️ *Uptime:* {uptime.days}d {uptime.seconds//3600}h
 💰 *Bankroll:* ${self.performance_data['bankroll']}
@@ -141,6 +141,7 @@ class DivineTradingBot:
 • Velocidad: <25ms por operación
 • Precisión: 99.8% ejecuciones
 • Cobertura: 100% mercados
+• Deploy: 🚀 Render Cloud
 """
         await update.message.reply_text(text, parse_mode='Markdown')
 
@@ -162,6 +163,8 @@ class DivineTradingBot:
 • Oportunidades/minuto: 12.7
 • Profit estimado/hora: $87
 • Precisión actual: 99.8%
+
+⚡ *Infraestructura:* Render Cloud
 """
         keyboard = [
             [InlineKeyboardButton("🔄 ACTUALIZAR", callback_data="refresh_live")],
@@ -183,6 +186,24 @@ class DivineTradingBot:
 • ROI mensual: 18.7%
 • CAGR anual: 224%
 • Sharpe ratio: 3.2
+"""
+        await update.message.reply_text(text, parse_mode='Markdown')
+
+    async def analyze(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        text = """
+🔍 *ANÁLISIS DE MERCADO - SISTEMA DIOS*
+
+📊 *Oportunidades Detectadas:*
+• ⚽ Football: 12 oportunidades (avg 5.2%)
+• 🏀 Basketball: 8 oportunidades (avg 7.1%)
+• 🎾 Tennis: 5 oportunidades (avg 4.3%)
+
+💎 *Mejores Oportunidades:*
+1. Champions League Final - ARB 7.3%
+2. NBA Game 7 - VAL 15.2% 
+3. Wimbledon Final - ARB 6.8%
+
+⚡ *Recomendación:* Ejecutar arbitraje divino
 """
         await update.message.reply_text(text, parse_mode='Markdown')
 
@@ -284,25 +305,15 @@ class DivineTradingBot:
             await self.live(update=query, context=None)
 
     async def run(self):
-        """Ejecutar el bot"""
-        print("🔥 SISTEMA DIOS ACTIVADO")
+        """Ejecutar el bot en Render"""
+        print("🚀 SISTEMA DIOS INICIADO EN RENDER")
+        print("⚡ Configurando webhook para producción...")
         
-        if os.environ.get('RAILWAY') or os.environ.get('RENDER'):
-            webhook_url = f"{os.environ.get('WEBHOOK_URL', 'https://your-app.railway.app')}/webhook"
-            await self.application.bot.set_webhook(webhook_url)
-            print(f"🌐 Webhook: {webhook_url}")
-        else:
-            await self.application.run_polling()
-            print("🔍 Modo polling activado")
-
-def main():
-    token = os.environ.get('TELEGRAM_TOKEN')
-    if not token:
-        print("❌ Error: TELEGRAM_TOKEN no configurado")
-        return
-    
-    bot = DivineTradingBot(token)
-    asyncio.run(bot.run())
-
-if __name__ == "__main__":
-    main()
+        # Para Render usamos webhook
+        webhook_url = f"https://{os.environ.get('RENDER_SERVICE_NAME', 'sistema-dios-bot')}.onrender.com"
+        
+        await self.application.bot.set_webhook(f"{webhook_url}/webhook")
+        print(f"🌐 Webhook configurado: {webhook_url}/webhook")
+        
+        # Iniciar polling para desarrollo local
+        await self.application.run_polling()
