@@ -1,28 +1,14 @@
 #!/bin/bash
 set -e
 
-echo "🚀 Iniciando despliegue del Sistema Dios..."
+echo "🚀 INICIANDO BUILD EN RENDER..."
+echo "🔍 Python version: $(python --version)"
+echo "🔍 Git version: $(git --version)"
 
-# Solucionar posibles problemas de Git
-git config --global http.postBuffer 524288000
-git config --global https.postBuffer 524288000
+# Configurar Python path
+export PYTHONPATH="/opt/render/project/src:$PYTHONPATH"
 
-# Intentar clonación con reintentos
-for i in {1..5}; do
-    echo "🔄 Intento de clonación $i/5..."
-    if git clone --depth 1 https://github.com/sistema-dios-dev/Sistema-dios.git /tmp/repo-clone; then
-        echo "✅ Clonación exitosa!"
-        cp -r /tmp/repo-clone/* .
-        rm -rf /tmp/repo-clone
-        break
-    else
-        echo "❌ Falló el intento $i, reintentando en 10 segundos..."
-        sleep 10
-    fi
-done
+# Ejecutar el script de deploy Python
+python deploy.py
 
-# Instalar dependencias
-echo "📦 Instalando dependencias..."
-pip install -r requirements.txt
-
-echo "🎉 Build completado!"
+echo "🎉 BUILD COMPLETADO EXITOSAMENTE"
