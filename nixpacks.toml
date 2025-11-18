@@ -1,11 +1,12 @@
 [phases.setup]
 cmds = ["pip install -r requirements.txt"]
 
-[phases.build]
-cmds = ["echo '✅ Build completado'"]
-
 [start]
 cmd = "python railway_start.py"
 
-[phases.install]
-cmds = ["apt-get update", "apt-get install -y python3 python3-pip"]
+[phases.build]
+cmds = ["echo '🚀 Building Sistema Dios...'"]
+
+[providers]
+railway = true
+render = true
