@@ -1,12 +1,9 @@
-flask==2.3.3
-pytelegrambotapi==4.14.0
-python-telegram-bot==13.15  # Versión MÁS ANTIGUA pero compatible
-requests==2.31.0
-gunicorn==21.2.0
+python-telegram-bot==20.7
+aiohttp==3.8.5
+pandas==2.0.3
 python-dotenv==1.0.0
-numpy==1.21.6  # Versión más compatible
-pandas==1.3.5  # Versión más compatible
-sqlite3
+requests==2.31.0
+
 
 
 
