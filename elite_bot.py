@@ -2,6 +2,7 @@ import os
 import asyncio
 import logging
 import random
+import requests
 from datetime import datetime
 from typing import Dict
 
@@ -56,30 +57,32 @@ class DiosSupremoAlertas:
         
         self.alertas_activas = True
         self.setup_handlers()
-        self._activar_nucleo_dios()
         logger.info("🔥 SISTEMA DIOS SUPREMO INICIALIZADO")
 
     def _activar_nucleo_dios(self):
         """Activar sistemas divinos"""
-        self.updater.start_polling()
-        asyncio.create_task(self._evolucion_omnisciencia())
-        asyncio.create_task(self._motor_predicciones_cuanticas())
+        # Usar threading para las tareas asíncronas
+        import threading
+        threading.Thread(target=self._evolucion_omnisciencia, daemon=True).start()
+        threading.Thread(target=self._motor_predicciones_cuanticas, daemon=True).start()
 
-    async def _evolucion_omnisciencia(self):
+    def _evolucion_omnisciencia(self):
         """Evolución automática del conocimiento"""
+        import time
         while True:
-            await asyncio.sleep(2700)  # 45 minutos
+            time.sleep(2700)  # 45 minutos
             self.omnisciencia_nivel = min(100.0, self.omnisciencia_nivel + 0.1)
             logger.info(f"🧠 Evolución Omnisciencia: {self.omnisciencia_nivel:.2f}%")
 
-    async def _motor_predicciones_cuanticas(self):
+    def _motor_predicciones_cuanticas(self):
         """Motor principal de predicciones"""
+        import time
         while self.alertas_activas:
             wait_time = random.randint(150, 420)  # 2.5-7 minutos
-            await asyncio.sleep(wait_time)
+            time.sleep(wait_time)
             
             if 8 <= datetime.now().hour <= 23:
-                await self._generar_alerta_inteligente()
+                self._generar_alerta_inteligente()
 
     def _generar_datos_partido_avanzado(self) -> Dict:
         """Generar análisis ultra-realista"""
@@ -108,13 +111,13 @@ class DiosSupremoAlertas:
             'hora_deteccion': datetime.now().strftime("%H:%M:%S")
         }
 
-    async def _generar_alerta_inteligente(self):
+    def _generar_alerta_inteligente(self):
         """Generar y enviar alerta"""
         try:
             datos_partido = self._generar_datos_partido_avanzado()
             mensaje_alerta = self._formatear_alerta_premium(datos_partido)
             
-            await self.updater.bot.send_message(
+            self.updater.bot.send_message(
                 chat_id=self.admin_chat_id,
                 text=mensaje_alerta,
                 parse_mode='Markdown'
@@ -205,6 +208,7 @@ class DiosSupremoAlertas:
 🚨 *Alertas automáticas cada 2-7 minutos*
 """
         update.message.reply_text(text, parse_mode='Markdown')
+        self._activar_nucleo_dios()
 
     def toggle_alertas(self, update: Update, context: CallbackContext):
         """Activar/desactivar alertas"""
@@ -269,12 +273,13 @@ class DiosSupremoAlertas:
         if str(user.id) != self.admin_chat_id:
             return
             
-        asyncio.create_task(self._generar_alerta_inteligente())
+        self._generar_alerta_inteligente()
         update.message.reply_text("✅ *Alerta de prueba generada*", parse_mode='Markdown')
 
     def run(self):
         """Ejecutar el sistema"""
         logger.info("🔥 SISTEMA DIOS EN MARCHA")
+        self.updater.start_polling()
         self.updater.idle()
 
 def main():
