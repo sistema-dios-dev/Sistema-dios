@@ -1,15 +1,20 @@
 import os
-from dotenv import load_dotenv
 
-load_dotenv()
-
-# Configuración del bot
-BOT_TOKEN = os.getenv('BOT_TOKEN', 'tu_token_aqui')
-DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///bot.db')
-
-# Configuración de APIs
-API_KEY = os.getenv('API_KEY', '')
-
-# Configuración del servidor
-DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
-PORT = int(os.getenv('PORT', '8000'))
+class Config:
+    TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN", "")
+    
+    # Modo operación
+    DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
+    GOD_MODE = True
+    
+    # Límites de riesgo
+    MAX_RISK_PER_TRADE = 0.02  # 2%
+    DAILY_LOSS_LIMIT = 0.1     # 10%
+    
+    # Bookmakers config
+    BOOKMAKERS = {
+        'bet365': {'active': True, 'weight': 0.3},
+        'pinnacle': {'active': True, 'weight': 0.4},
+        'williamhill': {'active': True, 'weight': 0.2},
+        'betfair': {'active': True, 'weight': 0.1}
+    }
