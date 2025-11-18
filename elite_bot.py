@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 try:
     from telegram import Update
-    from telegram.ext import Application, CommandHandler, ContextTypes
+    from telegram.ext import Updater, CommandHandler, CallbackContext
     TELEGRAM_AVAILABLE = True
 except ImportError as e:
     logger.error(f"❌ Error importando telegram: {e}")
@@ -27,7 +27,8 @@ class DiosSupremoAlertas:
             
         self.token = token
         self.admin_chat_id = admin_chat_id
-        self.application = Application.builder().token(token).build()
+        self.updater = Updater(token=token, use_context=True)
+        self.dispatcher = self.updater.dispatcher
         
         # 🔥 NÚCLEO DIVINO
         self.omnisciencia_nivel = 99.8
@@ -60,6 +61,7 @@ class DiosSupremoAlertas:
 
     def _activar_nucleo_dios(self):
         """Activar sistemas divinos"""
+        self.updater.start_polling()
         asyncio.create_task(self._evolucion_omnisciencia())
         asyncio.create_task(self._motor_predicciones_cuanticas())
 
@@ -112,7 +114,7 @@ class DiosSupremoAlertas:
             datos_partido = self._generar_datos_partido_avanzado()
             mensaje_alerta = self._formatear_alerta_premium(datos_partido)
             
-            await self.application.bot.send_message(
+            await self.updater.bot.send_message(
                 chat_id=self.admin_chat_id,
                 text=mensaje_alerta,
                 parse_mode='Markdown'
@@ -168,17 +170,17 @@ class DiosSupremoAlertas:
 
     def setup_handlers(self):
         """Configurar comandos"""
-        self.application.add_handler(CommandHandler("start", self.start))
-        self.application.add_handler(CommandHandler("alertas", self.toggle_alertas))
-        self.application.add_handler(CommandHandler("estadisticas", self.estadisticas_avanzadas))
-        self.application.add_handler(CommandHandler("sistema", self.estado_sistema))
-        self.application.add_handler(CommandHandler("test", self.test_alerta))
+        self.dispatcher.add_handler(CommandHandler("start", self.start))
+        self.dispatcher.add_handler(CommandHandler("alertas", self.toggle_alertas))
+        self.dispatcher.add_handler(CommandHandler("estadisticas", self.estadisticas_avanzadas))
+        self.dispatcher.add_handler(CommandHandler("sistema", self.estado_sistema))
+        self.dispatcher.add_handler(CommandHandler("test", self.test_alerta))
 
-    async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+    def start(self, update: Update, context: CallbackContext):
         """Mensaje de inicio"""
         user = update.effective_user
         if str(user.id) != self.admin_chat_id:
-            await update.message.reply_text("❌ *Acceso Restringido*", parse_mode='Markdown')
+            update.message.reply_text("❌ *Acceso Restringido*", parse_mode='Markdown')
             return
             
         text = f"""
@@ -202,9 +204,9 @@ class DiosSupremoAlertas:
 
 🚨 *Alertas automáticas cada 2-7 minutos*
 """
-        await update.message.reply_text(text, parse_mode='Markdown')
+        update.message.reply_text(text, parse_mode='Markdown')
 
-    async def toggle_alertas(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+    def toggle_alertas(self, update: Update, context: CallbackContext):
         """Activar/desactivar alertas"""
         user = update.effective_user
         if str(user.id) != self.admin_chat_id:
@@ -212,9 +214,9 @@ class DiosSupremoAlertas:
             
         self.alertas_activas = not self.alertas_activas
         estado = "✅ ACTIVADAS" if self.alertas_activas else "❌ DESACTIVADAS"
-        await update.message.reply_text(f"🔔 *Alertas {estado}*", parse_mode='Markdown')
+        update.message.reply_text(f"🔔 *Alertas {estado}*", parse_mode='Markdown')
 
-    async def estadisticas_avanzadas(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+    def estadisticas_avanzadas(self, update: Update, context: CallbackContext):
         """Mostrar estadísticas"""
         user = update.effective_user
         if str(user.id) != self.admin_chat_id:
@@ -234,9 +236,9 @@ class DiosSupremoAlertas:
 • Nodos: {self.omnipresencia_nodos}
 • Estado: {'🟢 ACTIVO' if self.alertas_activas else '🔴 PAUSADO'}
 """
-        await update.message.reply_text(text, parse_mode='Markdown')
+        update.message.reply_text(text, parse_mode='Markdown')
 
-    async def estado_sistema(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+    def estado_sistema(self, update: Update, context: CallbackContext):
         """Estado del sistema"""
         user = update.effective_user
         if str(user.id) != self.admin_chat_id:
@@ -259,21 +261,21 @@ class DiosSupremoAlertas:
 • Proxima: 2-7 minutos
 • Estado: 🟢 OPTIMO
 """
-        await update.message.reply_text(text, parse_mode='Markdown')
+        update.message.reply_text(text, parse_mode='Markdown')
 
-    async def test_alerta(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+    def test_alerta(self, update: Update, context: CallbackContext):
         """Generar alerta de prueba"""
         user = update.effective_user
         if str(user.id) != self.admin_chat_id:
             return
             
-        await self._generar_alerta_inteligente()
-        await update.message.reply_text("✅ *Alerta de prueba generada*", parse_mode='Markdown')
+        asyncio.create_task(self._generar_alerta_inteligente())
+        update.message.reply_text("✅ *Alerta de prueba generada*", parse_mode='Markdown')
 
-    async def run(self):
+    def run(self):
         """Ejecutar el sistema"""
         logger.info("🔥 SISTEMA DIOS EN MARCHA")
-        await self.application.run_polling()
+        self.updater.idle()
 
 def main():
     TOKEN = os.environ.get('TELEGRAM_TOKEN')
@@ -284,7 +286,7 @@ def main():
         return
     
     bot = DiosSupremoAlertas(token=TOKEN, admin_chat_id=ADMIN_CHAT_ID)
-    asyncio.run(bot.run())
+    bot.run()
 
 if __name__ == '__main__':
     main()
