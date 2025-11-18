@@ -1,4 +1,3 @@
-import pandas as pd
 from datetime import datetime
 
 class DataProcessor:
@@ -6,7 +5,7 @@ class DataProcessor:
         self.cache = {}
     
     def process_odds_data(self, raw_data):
-        """Procesar datos de odds en tiempo real"""
+        """Procesar datos de odds sin pandas"""
         processed = {
             'timestamp': datetime.now(),
             'events_count': len(raw_data),
@@ -16,9 +15,11 @@ class DataProcessor:
         return processed
     
     def _calculate_avg_odds(self, data):
+        # Simular cálculo sin pandas
         return {'home': 2.1, 'draw': 3.4, 'away': 3.2}
     
     def _find_quick_arbitrages(self, data):
+        # Simular búsqueda sin pandas
         return [
             {'event': 'Match A', 'profit': 5.2},
             {'event': 'Match B', 'profit': 3.8}
