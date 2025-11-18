@@ -8,3 +8,4 @@ services:
       - key: TELEGRAM_TOKEN
         sync: false
     plan: free
+    healthCheckPath: /health
